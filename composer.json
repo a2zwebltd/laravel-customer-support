@@ -1,0 +1,80 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "a2zwebltd/laravel-customer-support",
+    "description": "A portable Laravel customer support / helpdesk engine — tickets, threaded replies, attachments, SLA tracking, mail notifications, Livewire UI, and Nova admin.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "customer-support",
+        "helpdesk",
+        "tickets",
+        "support",
+        "livewire",
+        "flux",
+        "nova"
+    ],
+    "homepage": "https://github.com/a2zwebltd/laravel-customer-support",
+    "support": {
+        "issues": "https://github.com/a2zwebltd/laravel-customer-support/issues",
+        "source": "https://github.com/a2zwebltd/laravel-customer-support"
+    },
+    "authors": [
+        {
+            "name": "A2Z WEB",
+            "homepage": "https://a2zweb.co/"
+        },
+        {
+            "name": "Dawid Makowski",
+            "role": "Maintainer",
+            "homepage": "https://github.com/makowskid"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0|^12.0|^13.0",
+        "spatie/laravel-medialibrary": "^11.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.25",
+        "livewire/livewire": "^3.0|^4.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0"
+    },
+    "suggest": {
+        "livewire/livewire": "Enables the reactive Livewire UI layer (TicketsIndex, TicketCreate, TicketShow components).",
+        "livewire/flux": "Recommended UI component library used by the bundled Blade templates.",
+        "laravel/nova": "Auto-registers Nova resources (SupportTicket, SupportTicketMessage) when present."
+    },
+    "autoload": {
+        "psr-4": {
+            "A2ZWeb\\CustomerSupport\\": "src/",
+            "A2ZWeb\\CustomerSupport\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "A2ZWeb\\CustomerSupport\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "A2ZWeb\\CustomerSupport\\CustomerSupportServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
