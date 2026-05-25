@@ -33,6 +33,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property Carbon|null $closed_at
  * @property Carbon|null $due_at
  * @property Carbon|null $last_activity_at
+ * @property Carbon|null $overdue_notified_at
  * @property array<string, mixed>|null $metadata
  */
 class SupportTicket extends Model implements HasMedia
@@ -57,6 +58,7 @@ class SupportTicket extends Model implements HasMedia
             'closed_at' => 'datetime',
             'due_at' => 'datetime',
             'last_activity_at' => 'datetime',
+            'overdue_notified_at' => 'datetime',
             'metadata' => 'array',
         ];
     }
@@ -140,6 +142,19 @@ class SupportTicket extends Model implements HasMedia
         return $query->open()
             ->whereNotNull('due_at')
             ->where('due_at', '<', now());
+    }
+
+    /**
+     * Overdue tickets that still need an admin notification: either never
+     * notified, or touched (last_activity_at) since the last notification.
+     */
+    public function scopeNeedsOverdueNotification(Builder $query): Builder
+    {
+        return $query->overdue()
+            ->where(function (Builder $query): void {
+                $query->whereNull('overdue_notified_at')
+                    ->orWhereColumn('overdue_notified_at', '<', 'last_activity_at');
+            });
     }
 
     public function scopeForUser(Builder $query, int $userId): Builder
