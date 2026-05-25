@@ -111,6 +111,40 @@ it('attaches staged files as media on the new message and resets state', functio
         ->and($message->getMedia('attachments')->first()->file_name)->toBe('proof.png');
 });
 
+it('attaches a staged file regardless of the livewire temporary upload disk', function (string $tempDisk) {
+    // On prod the Livewire temporary-upload disk is S3, so the staged file is a
+    // remote TemporaryUploadedFile whose local path does not exist — the old
+    // path-based addMedia() blew up with FileDoesNotExist. We now read the bytes
+    // via the file's own disk, so attaching must work whatever disk holds the
+    // temp file. (Storage::fake is always local-backed, so it can't reproduce
+    // S3's missing-local-path quirk exactly; this guards the disk-agnostic
+    // contract and content integrity across disks.)
+    Storage::fake('public');
+    Storage::fake($tempDisk);
+    config()->set('livewire.temporary_file_upload.disk', $tempDisk);
+
+    $user = User::factory()->create();
+    $ticket = ticketOwnedBy($user);
+
+    actingAs($user);
+
+    Livewire::test(TicketShow::class, ['ticket' => $ticket])
+        ->set('reply', 'Here is the file you asked for.')
+        ->set('attachment', UploadedFile::fake()->create('proof.png', 50, 'image/png'))
+        ->call('postReply')
+        ->assertHasNoErrors();
+
+    $media = $ticket->messages()->latest('id')->first()->getMedia('attachments')->first();
+
+    expect($media)->not->toBeNull()
+        ->and($media->file_name)->toBe('proof.png')
+        ->and($media->disk)->toBe('public')
+        ->and(Storage::disk('public')->exists($media->getPathRelativeToRoot()))->toBeTrue();
+})->with([
+    'local temp disk (dev)' => 'local',
+    'dedicated s3 temp disk (prod)' => 's3',
+]);
+
 it('keeps the multiple attribute off the shipped attachment inputs', function () {
     $views = [
         __DIR__.'/../../resources/views/livewire/ticket-show.blade.php',

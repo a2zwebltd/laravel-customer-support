@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ReplyToTicket
 {
@@ -70,9 +71,30 @@ class ReplyToTicket
         $collection = config('customer-support.attachments.collection', 'attachments');
 
         foreach ($files as $file) {
-            if ($file instanceof UploadedFile) {
-                $message->addMedia($file)->toMediaCollection($collection);
-            }
+            $this->addAttachment($message, $file, $collection);
+        }
+    }
+
+    /**
+     * Attach a single uploaded file to the model, working regardless of which
+     * disk Livewire used for the temporary upload (local in dev, S3 in prod).
+     *
+     * Livewire's TemporaryUploadedFile may live on a remote disk, so we read
+     * its bytes through Livewire's own storage and hand a string to Media
+     * Library — never letting Media Library resolve a (missing) local path.
+     */
+    private function addAttachment(SupportTicketMessage $message, mixed $file, string $collection): void
+    {
+        if ($file instanceof TemporaryUploadedFile) {
+            $message->addMediaFromString($file->get())
+                ->usingFileName($file->getClientOriginalName())
+                ->toMediaCollection($collection);
+
+            return;
+        }
+
+        if ($file instanceof UploadedFile) {
+            $message->addMedia($file)->toMediaCollection($collection);
         }
     }
 
