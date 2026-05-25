@@ -108,6 +108,7 @@ return [
             'ticket_replied' => true,
             'status_changed' => true,
             'ticket_resolved' => true,
+            'ticket_overdue' => true,
         ],
     ],
 
