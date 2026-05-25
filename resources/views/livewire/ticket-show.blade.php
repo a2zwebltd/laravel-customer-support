@@ -69,10 +69,13 @@
                     <flux:textarea wire:model="reply" rows="4" placeholder="Write a reply…" />
                     @if (! empty($attachments))
                         <ul class="space-y-1 text-xs text-zinc-600 dark:text-zinc-300">
-                            @foreach ($attachments as $file)
+                            @foreach ($attachments as $i => $file)
                                 <li class="flex items-center gap-2">
                                     <flux:icon.document class="size-3.5" />
                                     <span>{{ $file->getClientOriginalName() }}</span>
+                                    <button type="button" wire:click="removeAttachment({{ $i }})" class="text-zinc-400 hover:text-red-600 dark:hover:text-red-400" aria-label="Remove attachment">
+                                        <flux:icon.x-mark class="size-3.5" />
+                                    </button>
                                 </li>
                             @endforeach
                         </ul>
@@ -80,9 +83,10 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                             <label class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-1.5 text-sm text-zinc-600 hover:border-teal-300 hover:text-teal-700 dark:border-zinc-700 dark:text-zinc-300">
-                                <flux:icon.paper-clip class="size-4" />
+                                <flux:icon.paper-clip class="size-4" wire:loading.remove wire:target="attachment" />
+                                <flux:icon.arrow-path class="size-4 animate-spin" wire:loading wire:target="attachment" />
                                 Attach
-                                <input type="file" wire:model="attachments" multiple class="hidden">
+                                <input type="file" wire:model="attachment" class="hidden">
                             </label>
                             @if ($isAgent)
                                 <flux:checkbox wire:model="internal" label="Internal note (not visible to customer)" />

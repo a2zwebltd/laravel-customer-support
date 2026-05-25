@@ -77,14 +77,21 @@
                 <span class="mt-1 text-xs text-zinc-400">
                     Up to {{ number_format(((int) config('customer-support.attachments.max_size_kb', 10240)) / 1024, 1) }} MB per file
                 </span>
-                <input id="cs-attachments" type="file" wire:model="attachments" multiple class="hidden">
+                <input id="cs-attachments" type="file" wire:model="attachment" class="hidden">
             </label>
+            <div wire:loading wire:target="attachment" class="mt-2 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                <flux:icon.arrow-path class="size-4 animate-spin" />
+                Uploading…
+            </div>
             @if (! empty($attachments))
                 <ul class="mt-3 space-y-1 text-sm text-zinc-600 dark:text-zinc-300">
-                    @foreach ($attachments as $file)
+                    @foreach ($attachments as $i => $file)
                         <li class="flex items-center gap-2">
                             <flux:icon.document class="size-4" />
                             <span>{{ $file->getClientOriginalName() }}</span>
+                            <button type="button" wire:click="removeAttachment({{ $i }})" class="text-zinc-400 hover:text-red-600 dark:hover:text-red-400" aria-label="Remove attachment">
+                                <flux:icon.x-mark class="size-4" />
+                            </button>
                         </li>
                     @endforeach
                 </ul>

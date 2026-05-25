@@ -4,6 +4,7 @@ namespace A2ZWeb\CustomerSupport\Tests;
 
 use A2ZWeb\CustomerSupport\CustomerSupportServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\MediaLibrary\MediaLibraryServiceProvider;
 
@@ -12,6 +13,7 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
+            LivewireServiceProvider::class,
             MediaLibraryServiceProvider::class,
             CustomerSupportServiceProvider::class,
         ];

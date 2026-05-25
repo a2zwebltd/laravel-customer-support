@@ -31,6 +31,15 @@ class TicketCreate extends Component
     /** @var array<int, TemporaryUploadedFile> */
     public array $attachments = [];
 
+    /**
+     * Staging slot for a single file. Uploaded one at a time and appended to
+     * $attachments so the input never needs the `multiple` attribute — which
+     * Livewire's S3 temporary-upload driver does not support.
+     *
+     * @var TemporaryUploadedFile|null
+     */
+    public $attachment = null;
+
     public function rules(): array
     {
         $maxKb = (int) config('customer-support.attachments.max_size_kb', 10240);
@@ -39,6 +48,28 @@ class TicketCreate extends Component
         return [
             'attachments.*' => ['file', 'max:'.$maxKb, 'mimetypes:'.implode(',', $mimes)],
         ];
+    }
+
+    public function updatedAttachment(): void
+    {
+        $maxKb = (int) config('customer-support.attachments.max_size_kb', 10240);
+        $mimes = (array) config('customer-support.attachments.accepted_mimes', []);
+
+        $this->validate([
+            'attachment' => ['file', 'max:'.$maxKb, 'mimetypes:'.implode(',', $mimes)],
+        ]);
+
+        if ($this->attachment) {
+            $this->attachments[] = $this->attachment;
+        }
+
+        $this->attachment = null;
+    }
+
+    public function removeAttachment(int $index): void
+    {
+        unset($this->attachments[$index]);
+        $this->attachments = array_values($this->attachments);
     }
 
     public function submit(CreateTicket $action): void
