@@ -12,11 +12,11 @@ Designed to drop into any Laravel app with minimal wiring while remaining fully 
 
 | Agent dashboard | New ticket |
 |---|---|
-| ![Agent dashboard](screenshots/agent-dashboard.png) | ![New ticket](screenshots/new-ticket.png) |
+| ![Agent dashboard](https://raw.githubusercontent.com/a2zwebltd/laravel-customer-support/refs/heads/main/screenshots/agent-dashboard.png) | ![New ticket](https://raw.githubusercontent.com/a2zwebltd/laravel-customer-support/refs/heads/main/screenshots/new-ticket.png) |
 
 | Ticket details | Nova admin |
 |---|---|
-| ![Ticket details](screenshots/ticket-details.png) | ![Nova details](screenshots/nova-details.png) |
+| ![Ticket details](https://raw.githubusercontent.com/a2zwebltd/laravel-customer-support/refs/heads/main/screenshots/ticket-details.png) | ![Nova details](https://raw.githubusercontent.com/a2zwebltd/laravel-customer-support/refs/heads/main/screenshots/nova-details.png) |
 
 ## Requirements
 
